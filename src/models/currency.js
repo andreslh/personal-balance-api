@@ -8,6 +8,7 @@ const currencySchema = new mongoose.Schema({
   acronym: {
     type: String,
     required: true,
+    unique: true,
   },
   value: {
     type: Number,
