@@ -1,4 +1,3 @@
-const express = require('express');
 const Currency = require('../models/currency');
 
 const add = async (req, res) => {
