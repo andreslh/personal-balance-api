@@ -1,4 +1,3 @@
-const express = require('express');
 const Income = require('../models/income');
 
 const add = async (req, res) => {

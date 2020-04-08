@@ -1,6 +1,4 @@
-const express = require('express');
 const Expense = require('../models/expense');
-const router = express.Router();
 
 const add = async (req, res) => {
   const expenseBody = { ...req.body };
