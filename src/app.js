@@ -1,14 +1,10 @@
 const express = require('express');
 require('./db/mongoose');
-const currencyRouter = require('./routers/currency');
-const incomeRouter = require('./routers/income');
-const expenseRouter = require('./routers/expense');
+const apiRouter = require('./routes');
 
 const app = express();
 
 app.use(express.json());
-app.use(currencyRouter);
-app.use(incomeRouter);
-app.use(expenseRouter);
+app.use(apiRouter);
 
 module.exports = app;

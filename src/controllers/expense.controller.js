@@ -2,7 +2,7 @@ const express = require('express');
 const Expense = require('../models/expense');
 const router = express.Router();
 
-router.post('/expenses', async (req, res) => {
+const add = async (req, res) => {
   const expenseBody = { ...req.body };
   if (expenseBody.due_date) {
     expenseBody.due_date = new Date(expenseBody.due_date).toISOString();
@@ -16,33 +16,33 @@ router.post('/expenses', async (req, res) => {
   } catch (error) {
     res.status(400).send(error);
   }
-});
+};
 
-router.get('/expenses', async (req, res) => {
+const getMany = async (req, res) => {
   try {
     const expenses = await Expense.find();
     res.send(expenses);
   } catch (error) {
     res.status(500).send(error);
   }
-});
+};
 
-router.get('/expenses/:id', async (req, res) => {
+const getOne = async (req, res) => {
   try {
     const { id } = req.params;
     const expense = await Expense.findOne({ _id: id });
 
     if (!expense) {
-      res.status(404).send();
+      return res.status(404).send();
     }
 
     res.send(expense);
   } catch (error) {
     res.status(400).send(error);
   }
-});
+};
 
-router.patch('/expenses/:id', async (req, res) => {
+const update = async (req, res) => {
   try {
     const { id } = req.params;
     const { body } = req;
@@ -60,13 +60,13 @@ router.patch('/expenses/:id', async (req, res) => {
     );
 
     if (!isValidUpdate) {
-      res.status(400).send('Invalid fields');
+      return res.status(400).send('Invalid fields');
     }
 
     const expense = await Expense.findOne({ _id: id });
 
     if (!expense) {
-      res.status(404).send();
+      return res.status(404).send();
     }
 
     fieldsToUpdate.forEach((field) => (expense[field] = body[field]));
@@ -76,21 +76,27 @@ router.patch('/expenses/:id', async (req, res) => {
   } catch (error) {
     res.status(400).send(error);
   }
-});
+};
 
-router.delete('/expenses/:id', async (req, res) => {
+const remove = async (req, res) => {
   try {
     const { id } = req.params;
     const expense = await Expense.findOneAndDelete({ _id: id });
 
     if (!expense) {
-      res.status(404).send();
+      return res.status(404).send();
     }
 
     res.send(expense);
   } catch (error) {
     res.status(400).send(error);
   }
-});
+};
 
-module.exports = router;
+module.exports = {
+  add,
+  getMany,
+  getOne,
+  update,
+  remove,
+};
