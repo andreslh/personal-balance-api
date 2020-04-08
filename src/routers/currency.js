@@ -29,7 +29,7 @@ router.get('/currencies/:id', async (req, res) => {
     const { id } = req.params;
     const currency = await Currency.findOne({ _id: id });
     if (!currency) {
-      res.status(404).send();
+      return res.status(404).send();
     }
 
     res.send(currency);
@@ -48,7 +48,7 @@ router.patch('/currencies/:id', async (req, res) => {
       allowedFields.includes(key),
     );
     if (!isValudUpdate) {
-      res.status(400).send('Invalid fields');
+      return res.status(400).send('Invalid fields');
     }
 
     const currency = await Currency.findOne({ _id: id });
@@ -72,7 +72,7 @@ router.delete('/currencies/:id', async (req, res) => {
     const currency = await Currency.findOneAndDelete({ _id: id });
 
     if (!currency) {
-      res.status(404).send();
+      return res.status(404).send();
     }
 
     res.send(currency);
