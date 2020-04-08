@@ -1,8 +1,7 @@
 const express = require('express');
 const Currency = require('../models/currency');
-const router = express.Router();
 
-router.post('/currencies', async (req, res) => {
+const add = async (req, res) => {
   const currency = new Currency({
     ...req.body,
   });
@@ -13,18 +12,18 @@ router.post('/currencies', async (req, res) => {
   } catch (error) {
     res.status(400).send(error);
   }
-});
+};
 
-router.get('/currencies', async (req, res) => {
+const getMany = async (req, res) => {
   try {
     const currencies = await Currency.find();
     res.send(currencies);
   } catch (error) {
     res.status(500).send(error);
   }
-});
+};
 
-router.get('/currencies/:id', async (req, res) => {
+const getOne = async (req, res) => {
   try {
     const { id } = req.params;
     const currency = await Currency.findOne({ _id: id });
@@ -36,9 +35,9 @@ router.get('/currencies/:id', async (req, res) => {
   } catch (error) {
     res.status(400).send(error);
   }
-});
+};
 
-router.patch('/currencies/:id', async (req, res) => {
+const update = async (req, res) => {
   try {
     const { id } = req.params;
     const { body } = req;
@@ -54,7 +53,7 @@ router.patch('/currencies/:id', async (req, res) => {
     const currency = await Currency.findOne({ _id: id });
 
     if (!currency) {
-      res.send(404);
+      return res.send(404);
     }
 
     fieldsToUpdate.forEach((field) => (currency[field] = body[field]));
@@ -64,9 +63,9 @@ router.patch('/currencies/:id', async (req, res) => {
   } catch (error) {
     res.status(400).send(error);
   }
-});
+};
 
-router.delete('/currencies/:id', async (req, res) => {
+const remove = async (req, res) => {
   try {
     const { id } = req.params;
     const currency = await Currency.findOneAndDelete({ _id: id });
@@ -79,6 +78,12 @@ router.delete('/currencies/:id', async (req, res) => {
   } catch (error) {
     res.status(400).send();
   }
-});
+};
 
-module.exports = router;
+module.exports = {
+  add,
+  getMany,
+  getOne,
+  update,
+  remove,
+};

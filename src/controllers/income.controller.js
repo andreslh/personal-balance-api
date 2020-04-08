@@ -1,8 +1,7 @@
 const express = require('express');
 const Income = require('../models/income');
-const router = express.Router();
 
-router.post('/incomes', async (req, res) => {
+const add = async (req, res) => {
   const income = new Income({
     ...req.body,
   });
@@ -13,33 +12,33 @@ router.post('/incomes', async (req, res) => {
   } catch (error) {
     res.status(400).send(error);
   }
-});
+};
 
-router.get('/incomes', async (req, res) => {
+const getMany = async (req, res) => {
   try {
     const incomes = await Income.find();
     res.send(incomes);
   } catch (error) {
     res.status(500).send(error);
   }
-});
+};
 
-router.get('/incomes/:id', async (req, res) => {
+const getOne = async (req, res) => {
   try {
     const { id } = req.params;
     const income = await Income.findOne({ _id: id });
 
     if (!income) {
-      res.status(404).send();
+      return res.status(404).send();
     }
 
     res.send(income);
   } catch (error) {
     res.status(400).send(error);
   }
-});
+};
 
-router.patch('/incomes/:id', async (req, res) => {
+const update = async (req, res) => {
   try {
     const { id } = req.params;
     const { body } = req;
@@ -51,13 +50,13 @@ router.patch('/incomes/:id', async (req, res) => {
     );
 
     if (!isValidUpdate) {
-      res.status(400).send('Invalid fields');
+      return res.status(400).send('Invalid fields');
     }
 
     const income = await Income.findOne({ _id: id });
 
     if (!income) {
-      res.status(404).send();
+      return res.status(404).send();
     }
 
     fieldsToUpdate.forEach((field) => (income[field] = body[field]));
@@ -67,21 +66,27 @@ router.patch('/incomes/:id', async (req, res) => {
   } catch (error) {
     res.status(400).send(error);
   }
-});
+};
 
-router.delete('/incomes/:id', async (req, res) => {
+const remove = async (req, res) => {
   try {
     const { id } = req.params;
     const income = await Income.findOneAndDelete({ _id: id });
 
     if (!income) {
-      res.status(404).send();
+      return res.status(404).send();
     }
 
     res.send(income);
   } catch (error) {
     res.status(400).send(error);
   }
-});
+};
 
-module.exports = router;
+module.exports = {
+  add,
+  getMany,
+  getOne,
+  update,
+  remove,
+};
